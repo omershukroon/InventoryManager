@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".AddProductActivity">
+
+    <!-- Add Image Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_btn_AddImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/edit_compat"
+        android:layout_centerHorizontal="true"
+        android:text="Add Image" />
+
+    <!-- Horizontal ScrollView for Images -->
+    <HorizontalScrollView
+        android:id="@+id/hsvImages"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_above="@+id/add_btn_AddImage"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/horizontal_scrollview_content">
+
+        <LinearLayout
+            android:id="@+id/llImageContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- Image views will be dynamically added here -->
+        </LinearLayout>
+    </HorizontalScrollView>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/edit_compat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+        <!-- Product Name -->
+        <EditText
+            android:id="@+id/add_ET_ProductName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_border"
+            android:hint="@string/product_name"
+            android:inputType="text"
+            android:textColor="@color/black" />
+
+        <!-- Product Price -->
+        <EditText
+            android:id="@+id/add_ET_ProductPrice"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_border"
+            android:hint="@string/price"
+            android:inputType="numberDecimal"
+            android:textColor="@color/black" />
+
+        <!-- Product Quantity -->
+        <EditText
+            android:id="@+id/add_ET_ProductQuantity"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_border"
+            android:hint="@string/quantity"
+            android:inputType="number"
+            android:textColor="@color/black" />
+
+        <!-- Product Barcode -->
+        <EditText
+            android:id="@+id/add_ET_ProductBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/edit_text_border"
+            android:hint="@string/barcode"
+            android:inputType="text"
+            android:textColor="@color/black" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/add_btn_AddProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_compat"
+        android:layout_centerHorizontal="true"
+        android:text="Add Product" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_GoBack_floatingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:contentDescription="go back"
+        android:src="@drawable/arrow_back_icon"
+        app:fabSize="normal" />
+
+</RelativeLayout>
