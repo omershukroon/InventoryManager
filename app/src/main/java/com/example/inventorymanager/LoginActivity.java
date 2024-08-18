@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void transactToNextActivity() {
-        Intent intent = new Intent(this, AddProductActivity.class);
+        Intent intent = new Intent(this, FragmentProductActivity.class);
         startActivity(intent);
         finish();
     }
