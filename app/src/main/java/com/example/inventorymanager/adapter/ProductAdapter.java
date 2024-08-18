@@ -41,7 +41,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.productName.setText(product.getName());
         holder.productAmount.setText("Amount: " + product.getAmount());
         holder.productPrice.setText("Price: " + product.getPrice());
-        holder.productBarcode.setText("Barcode: " + product.getBarcode());
+
+        // Set the static text for barcode label
+        holder.productTXTBarcode.setText("Barcode:");
+
+        // Update the barcode with the actual product's barcode
+        holder.productBarcode.setText(product.getBarcode());
 
         // Load the first image from Firebase Storage using Glide
         if (product.getImages() != null && !product.getImages().isEmpty()) {
@@ -53,6 +58,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         } else {
             holder.productImage.setImageResource(R.drawable.no_image_icon);
         }
+
+        // Remove or comment out the onClickListener
+        // holder.itemView.setOnClickListener(v -> {
+        //     Intent intent = new Intent(context, EditProductActivity.class);
+        //     intent.putExtra("Product", product);  // Passing the product object
+        //     context.startActivity(intent);
+        // });
     }
 
     @Override
@@ -75,7 +87,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
-        TextView productName, productAmount, productPrice, productBarcode;
+        TextView productName, productAmount, productPrice, productBarcode, productTXTBarcode;
         ImageView productImage;
 
         ProductViewHolder(@NonNull View itemView) {
@@ -84,6 +96,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             productAmount = itemView.findViewById(R.id.product_amount);
             productPrice = itemView.findViewById(R.id.product_price);
             productBarcode = itemView.findViewById(R.id.product_barcode);
+            productTXTBarcode = itemView.findViewById(R.id.product_TXT_barcode);
             productImage = itemView.findViewById(R.id.product_IMG);
         }
     }

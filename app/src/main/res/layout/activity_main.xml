@@ -1,19 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_BG"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/main_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/up_bar"
+        android:orientation="horizontal"
+        android:padding="10dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="InventoryManager"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_BTN_LogUot"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/log_out_icon"
+            app:iconSize="50dp"
+            app:iconTintMode="multiply"
+            tools:text="m" />
+
+
+    </LinearLayout>
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/main_bar"
+        android:padding="30dp">
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/main_BTN_ProductManager"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            app:srcCompat="@drawable/btn_product_manager"
+            android:layout_marginVertical="30dp"
+            android:scaleType="fitCenter"
+            android:background="@color/main_BG"/>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/main_BTN_ProductOrder"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            app:srcCompat="@drawable/btn_product_order"
+            android:scaleType="fitCenter"
+            android:background="@color/main_BG"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>

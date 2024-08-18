@@ -1,16 +1,20 @@
 package com.example.inventorymanager.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Product {
-
+public class Product implements Serializable {
     private String name = "";
     private String barcode = "";
     private List<String> images = new ArrayList<>();
     private int amount = 0;
     private double price = 0;
     private String productID;
+
+    public Product() {
+        // Default constructor required for calls to DataSnapshot.getValue(Product.class)
+    }
 
     public Product(String name, String barcode, List<String> images, int amount, double price, String productID) {
         this.name = name;
@@ -21,65 +25,53 @@ public class Product {
         this.productID = productID;
     }
 
-    public Product() {
-    }
+    // Getters and setters...
 
     public String getName() {
         return name;
     }
 
-    public Product setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
     public String getBarcode() {
         return barcode;
     }
 
-    public Product setBarcode(String barcode) {
+    public void setBarcode(String barcode) {
         this.barcode = barcode;
-        return this;
     }
 
     public List<String> getImages() {
         return images;
     }
 
-    public Product addImage(String imageSrc) {
-        this.images.add(imageSrc);
-        return this;
-    }
-
-    public Product removeImage(String imageSrc) {
-        this.images.remove(imageSrc);
-        return this;
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 
     public int getAmount() {
         return amount;
     }
 
-    public Product setAmount(int amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
-        return this;
     }
 
     public double getPrice() {
         return price;
     }
 
-    public Product setPrice(double price) {
+    public void setPrice(double price) {
         this.price = price;
-        return this;
     }
 
     public String getProductID() {
         return productID;
     }
 
-    public Product setProductID(String productID) {
+    public void setProductID(String productID) {
         this.productID = productID;
-        return this;
     }
 }

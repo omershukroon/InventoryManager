@@ -6,6 +6,7 @@
     <string name="product_name">Product Name</string>
     <string name="horizontal_scrollview_content">Scrollable list of images</string>
     <string name="product_manager">Product Manager</string>
+    <string name="order_manager">Order Manager</string>
 
 
 </resources>

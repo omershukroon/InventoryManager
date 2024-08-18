@@ -15,8 +15,9 @@
         android:layout_alignParentTop="true"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:queryHint="Search products"
+        app:queryHint="Search for products"
         android:background="@drawable/edit_text_border"
+        android:textAppearance="@color/black"
         />
 
     <androidx.recyclerview.widget.RecyclerView
