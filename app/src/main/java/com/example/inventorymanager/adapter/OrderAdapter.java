@@ -15,6 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.inventorymanager.Models.Order;
 import com.example.inventorymanager.Models.Product;
 import com.example.inventorymanager.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +27,14 @@ import java.util.List;
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
     private List<Order> orderList;
     private List<Order> filteredOrderList;
-
     private Context context;
+    private FirebaseDatabase database;
 
     public OrderAdapter(Context context, List<Order> orderList) {
         this.context = context;
         this.orderList = orderList;
+        this.filteredOrderList = new ArrayList<>(orderList);
+        this.database = FirebaseDatabase.getInstance();
     }
 
     @NonNull
@@ -39,7 +46,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
-        Order order = orderList.get(position);
+        Order order = filteredOrderList.get(position);
         holder.orderNumber.setText("Order #" + order.getOrderNumber());
         holder.orderAmount.setText("Amount: $" + order.getOrderAmount());
         holder.orderFulfilledStatus.setText("Fulfilled: " + (order.isFulfilled() ? "Yes" : "No"));
@@ -53,17 +60,22 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         }
 
         holder.orderFulfilledCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // Update the order's fulfillment status and notify the database if needed
-            order.setFulfilled(isChecked);
+            // Update the order's fulfillment status
 
             // Update the color immediately after changing the status
             if (isChecked) {
                 holder.orderColorIsFulfilled.setBackgroundColor(ContextCompat.getColor(context, R.color.green_A400));
+                updateProductQuantities(order, true); // Subtract quantities
             } else {
                 holder.orderColorIsFulfilled.setBackgroundColor(ContextCompat.getColor(context, R.color.red_A400));
+                updateProductQuantities(order, false); // Add quantities
             }
+            order.setFulfilled(isChecked);
 
-            // Update the database as needed
+            holder.orderFulfilledStatus.setText("Fulfilled: " + (order.isFulfilled() ? "Yes" : "No"));
+            // Update the order in the database
+            DatabaseReference orderRef = database.getReference("Order Information").child(order.getOrderID());
+            orderRef.setValue(order);
         });
 
         holder.productListContainer.removeAllViews();
@@ -87,6 +99,46 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         }
     }
 
+    private void updateProductQuantities(Order order, boolean isFulfilled) {
+        DatabaseReference productRef = database.getReference("Product Information");
+
+        List<Product> products = order.getProductList();
+        ArrayList<Integer> quantities = order.getProductQuantityList();
+
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            int orderQuantity = quantities.get(i);
+            String productID = product.getProductID();
+
+            productRef.child(productID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    Product dbProduct = dataSnapshot.getValue(Product.class);
+                    if (dbProduct != null) {
+                        int currentQuantity = dbProduct.getAmount();
+                        int updatedQuantity;
+
+                        if (isFulfilled) {
+                            updatedQuantity = currentQuantity - orderQuantity;
+                            dbProduct.setAmount(updatedQuantity);
+                        } else {
+                            updatedQuantity = currentQuantity + orderQuantity;
+                            dbProduct.setAmount(updatedQuantity);
+                        }
+
+                        // Update the product quantity in the database
+                        productRef.child(productID).child("amount").setValue(updatedQuantity);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle possible errors here
+                }
+            });
+        }
+    }
+
     public void filter(String query) {
         filteredOrderList.clear();
         if (query.isEmpty()) {
@@ -103,14 +155,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     @Override
     public int getItemCount() {
-        return orderList.size();
+        return filteredOrderList.size();
     }
 
     static class OrderViewHolder extends RecyclerView.ViewHolder {
         TextView orderNumber, orderAmount, orderFulfilledStatus;
         CheckBox orderFulfilledCheckBox;
         LinearLayout productListContainer;
-        LinearLayout orderColorIsFulfilled;
+        View orderColorIsFulfilled;
 
         OrderViewHolder(@NonNull View itemView) {
             super(itemView);

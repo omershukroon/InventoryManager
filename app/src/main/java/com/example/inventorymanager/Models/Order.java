@@ -75,6 +75,11 @@ public class Order {
         return orderNumber;
     }
 
+    public Order setOrderNumber(int orderNumber) {
+        this.orderNumber = orderNumber;
+        return this;
+    }
+
     public List<Product> getProductList() {
         return productList;
     }

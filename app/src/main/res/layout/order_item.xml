@@ -1,4 +1,5 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,70 +23,68 @@
             android:background="@color/blue_grey_300L"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <LinearLayout
                 android:id="@+id/order_color_isFulfilled"
                 android:layout_width="15dp"
                 android:layout_height="match_parent"
-                android:background="@color/red_A400" />
+                android:background="@color/red_A400"
+                android:orientation="horizontal" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <!-- Order Info Container -->
                 <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/order_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_margin="10dp"
+                    android:orientation="vertical">
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
+                    <!-- Order Number -->
+                    <TextView
+                        android:id="@+id/order_number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <!-- Order Number -->
-                        <TextView
-                            android:id="@+id/order_number"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/black"
-                            android:textSize="24sp"
-                            android:textStyle="bold"
-                            tools:text="Order #1234" />
+                        android:textColor="@color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        tools:text="Order #1234" />
 
-                        <!-- Fulfillment Status -->
-                        <TextView
-                            android:id="@+id/order_fulfilled_status"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="20dp"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            tools:text="Fulfilled: No" />
-
-                        <!-- Order Amount -->
-                        <TextView
-                            android:id="@+id/order_amount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/black"
-                            android:textSize="20sp"
-                            tools:text="Amount: $123.45" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-                    <!-- Product List Container -->
-                    <LinearLayout
-                        android:id="@+id/order_product_list_container"
-                        android:layout_width="0dp"
+                    <!-- Fulfillment Status -->
+                    <TextView
+                        android:id="@+id/order_fulfilled_status"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-                        <!-- Product items will be dynamically added here -->
-                    </LinearLayout>
+                        android:layout_marginVertical="20dp"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        tools:text="Fulfilled: No" />
+
+                    <!-- Order Amount -->
+                    <TextView
+                        android:id="@+id/order_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        tools:text="Amount: $123.45" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
+                <!-- Product List Container -->
+                <LinearLayout
+                    android:id="@+id/order_product_list_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginRight="10dp"
+                    android:orientation="vertical">
+                    <!-- Product items will be dynamically added here -->
+                </LinearLayout>
+
+                <!-- Fulfillment CheckBox -->
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -96,9 +95,7 @@
                         android:id="@+id/orderItem_CheckBox_folfilled"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TO FULFILLED"
-
-                        />
+                        android:text="TO FULFILLED" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

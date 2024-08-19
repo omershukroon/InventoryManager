@@ -19,12 +19,12 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:text="@string/order_manager"
-            android:textSize="25sp"
-            android:textStyle="bold"
             android:textColor="@color/white"
-            android:layout_gravity="center" />
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
         <!-- Back Button -->
         <com.google.android.material.button.MaterialButton
@@ -40,20 +40,21 @@
     <!-- FrameLayout to Host Fragment -->
     <FrameLayout
         android:id="@+id/fragOrder_FRAME_list"
-        android:layout_below="@+id/fragOrder_FRAME_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
-        android:background="@color/white" />
+        android:layout_below="@+id/fragOrder_FRAME_bar"
+        android:background="@color/list_bg"
+        android:padding="10dp" />
 
     <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:layout_margin="16dp"
+        android:backgroundTint="@color/bar_BG2"
         android:clickable="true"
         android:src="@drawable/plus_icon" />
 </RelativeLayout>

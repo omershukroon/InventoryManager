@@ -15,7 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/edit_compat"
         android:layout_centerHorizontal="true"
-        android:text="Add Image" />
+        android:text="Add Image"
+        android:backgroundTint="@color/bar_BG2"/>
 
     <!-- Horizontal ScrollView for Images -->
     <HorizontalScrollView
@@ -94,7 +95,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/edit_compat"
         android:layout_centerHorizontal="true"
-        android:text="Add Product" />
+        android:text="Add Product"
+        android:backgroundTint="@color/bar_BG2"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_GoBack_floatingButton"
@@ -106,6 +108,7 @@
         android:clickable="true"
         android:contentDescription="go back"
         android:src="@drawable/arrow_back_icon"
-        app:fabSize="normal" />
+        app:fabSize="normal"
+        android:backgroundTint="@color/bar_BG2"/>
 
 </RelativeLayout>

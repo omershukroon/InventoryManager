@@ -36,10 +36,10 @@ public class ListAddOrderFragment extends Fragment {
         View v = inflater.inflate(R.layout.activity_list_add_order_fragment, container, false);
 
         findView(v);
-        initView();
         databaseRef = FirebaseDatabase.getInstance().getReference("Product Information");
         loadAllProductsFromFirebase();
         listenForRealTimeUpdates();
+        initView();
 
         return v;
     }
@@ -69,6 +69,8 @@ public class ListAddOrderFragment extends Fragment {
     }
 
     private void loadAllProductsFromFirebase() {
+        if (productList.size() !=0){
+
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -87,6 +89,7 @@ public class ListAddOrderFragment extends Fragment {
                 // Handle possible errors during the data retrieval
             }
         });
+        }
     }
 
     private void listenForRealTimeUpdates() {
@@ -147,12 +150,10 @@ public class ListAddOrderFragment extends Fragment {
 
     public List<Product> getSelectedProducts() {
         List<Product> selectedProducts = new ArrayList<>();
-        List<Integer> quantities = new ArrayList<>();
         for (Product product : productList) {
             int quantity = addProductToOrderAdapter.getProductQuantity(product.getBarcode());
             if (quantity > 0) {
                 selectedProducts.add(product);
-                quantities.add(quantity);
             }
         }
         return selectedProducts;

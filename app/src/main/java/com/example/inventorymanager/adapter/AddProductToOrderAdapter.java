@@ -16,24 +16,28 @@ import com.example.inventorymanager.Models.Product;
 import com.example.inventorymanager.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class AddProductToOrderAdapter extends RecyclerView.Adapter<AddProductToOrderAdapter.ProductViewHolder> {
     private List<Product> productList;
     private List<Product> filteredProductList;
     private Context context;
-    private HashMap<String, Integer> productQuantities;
+    private List<Integer> productQuantities;
 
     public AddProductToOrderAdapter(Context context, List<Product> productList) {
         this.context = context;
         this.productList = productList;
         this.filteredProductList = new ArrayList<>(productList);
-        this.productQuantities = new HashMap<>();
+        this.productQuantities = new ArrayList<>();
 
         // Initialize all product quantities to 0
-        for (Product product : productList) {
-            productQuantities.put(product.getBarcode(), 0);
+        initializeQuantities(filteredProductList.size());
+    }
+
+    private void initializeQuantities(int size) {
+        productQuantities.clear();
+        for (int i = 0; i < size; i++) {
+            productQuantities.add(0);
         }
     }
 
@@ -52,7 +56,7 @@ public class AddProductToOrderAdapter extends RecyclerView.Adapter<AddProductToO
         holder.productName.setText(product.getName());
         holder.productPrice.setText("Price: " + product.getPrice());
         holder.productBarcode.setText(product.getBarcode());
-        holder.txtQuantity.setText(String.valueOf(0));
+        holder.txtQuantity.setText(String.valueOf(productQuantities.get(position)));
 
         // Load the product image using Glide
         if (product.getImages() != null && !product.getImages().isEmpty()) {
@@ -67,17 +71,17 @@ public class AddProductToOrderAdapter extends RecyclerView.Adapter<AddProductToO
 
         // Set onClickListener for the plus button
         holder.btnPlus.setOnClickListener(v -> {
-            int currentQuantity = productQuantities.get(product.getBarcode());
-            productQuantities.put(product.getBarcode(), currentQuantity + 1);
-            holder.txtQuantity.setText(String.valueOf(productQuantities.get(product.getBarcode())));
+            int currentQuantity = productQuantities.get(position);
+            productQuantities.set(position, currentQuantity + 1);
+            holder.txtQuantity.setText(String.valueOf(productQuantities.get(position)));
         });
 
         // Set onClickListener for the minus button
         holder.btnMinus.setOnClickListener(v -> {
-            int currentQuantity = productQuantities.get(product.getBarcode());
+            int currentQuantity = productQuantities.get(position);
             if (currentQuantity > 0) {
-                productQuantities.put(product.getBarcode(), currentQuantity - 1);
-                holder.txtQuantity.setText(String.valueOf(productQuantities.get(product.getBarcode())));
+                productQuantities.set(position, currentQuantity - 1);
+                holder.txtQuantity.setText(String.valueOf(productQuantities.get(position)));
             }
         });
     }
@@ -98,11 +102,20 @@ public class AddProductToOrderAdapter extends RecyclerView.Adapter<AddProductToO
                 }
             }
         }
+
+        // Re-initialize product quantities to match the filtered list size
+        initializeQuantities(filteredProductList.size());
+
         notifyDataSetChanged();
     }
 
     public int getProductQuantity(String barcode) {
-        return productQuantities.getOrDefault(barcode, 0);
+        for (int i = 0; i < productList.size(); i++) {
+            if (productList.get(i).getBarcode().equals(barcode)) {
+                return productQuantities.get(i);
+            }
+        }
+        return 0;
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {

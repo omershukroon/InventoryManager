@@ -90,30 +90,33 @@ public class ListProductFragment extends Fragment {
 
     // Method to load all products from Firebase into the product list
     private void loadAllProductsFromFirebase() {
-        // Add a listener to retrieve data once from the database
-        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Clear the current product list
-                productList.clear();
-                // Iterate through all child nodes in the "Product Information" node
-                for (DataSnapshot productSnapshot : dataSnapshot.getChildren()) {
-                    // Convert each child node to a Product object
-                    Product product = productSnapshot.getValue(Product.class);
-                    if (product != null) {
-                        // Add the product to the product list
-                        productList.add(product);
-                    }
-                }
-                // Notify the adapter that the data set has changed
-                productAdapter.notifyDataSetChanged();
-            }
+        if (productList.size() != 0) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle possible errors during the data retrieval
-            }
-        });
+            // Add a listener to retrieve data once from the database
+            databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // Clear the current product list
+                    productList.clear();
+                    // Iterate through all child nodes in the "Product Information" node
+                    for (DataSnapshot productSnapshot : dataSnapshot.getChildren()) {
+                        // Convert each child node to a Product object
+                        Product product = productSnapshot.getValue(Product.class);
+                        if (product != null) {
+                            // Add the product to the product list
+                            productList.add(product);
+                        }
+                    }
+                    // Notify the adapter that the data set has changed
+                    productAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle possible errors during the data retrieval
+                }
+            });
+        }
     }
 
     // Method to listen for real-time updates to the product data in Firebase

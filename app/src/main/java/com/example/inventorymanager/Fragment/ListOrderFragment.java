@@ -101,26 +101,29 @@ public class ListOrderFragment extends Fragment {
     }
 
     private void loadAllOrdersFromFirebase() {
-        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                orderList.clear();
-                for (DataSnapshot orderSnapshot : dataSnapshot.getChildren()) {
-                    Order order = orderSnapshot.getValue(Order.class);
-                    if (order != null) {
-                        orderList.add(order);
-                    }
-                }
-                filteredOrderList.clear();
-                filteredOrderList.addAll(orderList); // Initially show all orders
-                orderAdapter.notifyDataSetChanged();
-            }
+        if (orderList.size() != 0) {
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle possible errors
-            }
-        });
+            databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    orderList.clear();
+                    for (DataSnapshot orderSnapshot : dataSnapshot.getChildren()) {
+                        Order order = orderSnapshot.getValue(Order.class);
+                        if (order != null) {
+                            orderList.add(order);
+                        }
+                    }
+                    filteredOrderList.clear();
+                    filteredOrderList.addAll(orderList); // Initially show all orders
+                    orderAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle possible errors
+                }
+            });
+        }
     }
 
     private void listenForRealTimeUpdates() {

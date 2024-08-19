@@ -40,15 +40,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
-        android:background="@color/white" />
+        android:background="@color/list_bg"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/extended_floating_action_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@drawable/plus_icon" />
+        android:text="@string/add_order"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/bar_BG2"
+        android:icon="@drawable/plus_icon"
+        android:iconTint="@android:color/white"/>
+
 </RelativeLayout>
