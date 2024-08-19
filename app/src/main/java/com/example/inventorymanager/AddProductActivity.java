@@ -1,13 +1,14 @@
 package com.example.inventorymanager;
 
-import static android.app.PendingIntent.getActivity;
-
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -16,14 +17,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.inventorymanager.Models.Product;
-
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DatabaseReference;
@@ -53,8 +54,8 @@ public class AddProductActivity extends AppCompatActivity {
     private List<String> imageUrls = new ArrayList<>();
     private Uri imageUri;
     private FirebaseStorage storage;
+    private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> cameraLauncher;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +65,8 @@ public class AddProductActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
 
         findView();
-        initViwe();
-
+        registerActivityResultLaunchers();
+        initView();
     }
 
     private void findView() {
@@ -79,39 +80,111 @@ public class AddProductActivity extends AppCompatActivity {
         llImageContainer = findViewById(R.id.llImageContainer);
     }
 
-    private void initViwe() {
+    private void registerActivityResultLaunchers() {
+        cameraLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            Bundle extras = result.getData().getExtras();
+                            if (extras != null) {
+                                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                                imageUri = getImageUriFromBitmap(imageBitmap);
+                                addImageToScrollView(imageBitmap);
+                            }
+                        }
+                    } else {
+                        Toast.makeText(AddProductActivity.this, "Camera operation canceled", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
 
+        galleryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getData() != null) {
+                            imageUri = result.getData().getData();
+                            if (imageUri != null) {
+                                try {
+                                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                                    addImageToScrollView(imageBitmap);
+                                } catch (IOException e) {
+                                    Toast.makeText(AddProductActivity.this, "Failed to load image", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    } else {
+                        Toast.makeText(AddProductActivity.this, "Gallery operation canceled", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+    }
+
+    private void initView() {
         add_btn_AddImage.setOnClickListener(v -> showImagePickerOptions());
 
         add_btn_AddProduct.setOnClickListener(v -> uploadProductInformation());
 
         add_GoBack_floatingButton.setOnClickListener(v -> changeActivity());
-
     }
 
-
     private void showImagePickerOptions() {
-        // Show options to choose between camera and gallery
         String[] options = {"Camera", "Gallery"};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Image Source");
         builder.setItems(options, (dialog, which) -> {
             if (which == 0) {
                 // Camera selected
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    cameraLauncher.launch(takePictureIntent);
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                if (ContextCompat.checkSelfPermission(AddProductActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(AddProductActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+                } else {
+                    openCamera();
                 }
-            } else if (which == 1) {
+            } else {
                 // Gallery selected
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto, REQUEST_IMAGE_PICK);
+                requestGalleryPermission();
             }
         });
         builder.show();
     }
 
+    private void requestGalleryPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) { // Android 14+
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED}, 102);
+            } else {
+                openGallery();
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 101);
+            } else {
+                openGallery();
+            }
+        } else { // Below Android 13
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
+            } else {
+                openGallery();
+            }
+        }
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraLauncher.launch(intent);
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryLauncher.launch(intent);
+    }
+
+    private Uri getImageUriFromBitmap(Bitmap bitmap) {
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "ProductImage", null);
+        return Uri.parse(path);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -123,7 +196,7 @@ public class AddProductActivity extends AppCompatActivity {
             if (requestCode == REQUEST_IMAGE_CAPTURE && data != null) {
                 Bundle extras = data.getExtras();
                 imageBitmap = (Bitmap) extras.get("data");
-                imageUri = Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), imageBitmap, "Title", null));
+                imageUri = getImageUriFromBitmap(imageBitmap);
             } else if (requestCode == REQUEST_IMAGE_PICK && data != null) {
                 imageUri = data.getData();
                 try {
@@ -138,6 +211,7 @@ public class AddProductActivity extends AppCompatActivity {
             }
         }
     }
+
     private void uploadImagesAndProductInfo(Product product) {
         if (imageUrls.isEmpty()) {
             uploadProductInformation(product); // If no images, directly upload product info
@@ -186,8 +260,6 @@ public class AddProductActivity extends AppCompatActivity {
         });
     }
 
-
-
     private void addImageToScrollView(Bitmap bitmap) {
         try {
             // Correct the orientation if necessary
@@ -198,8 +270,8 @@ public class AddProductActivity extends AppCompatActivity {
 
             // Set layout parameters with 100dp by 100dp
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                    (int) getResources().getDisplayMetrics().density * 100, // Width 100dp
-                    (int) getResources().getDisplayMetrics().density * 100  // Height 100dp
+                    (int) getResources().getDisplayMetrics().density * 200, // Width 100dp
+                    (int) getResources().getDisplayMetrics().density * 200  // Height 100dp
             );
             layoutParams.setMargins(10, 0, 10, 0);
             imageView.setLayoutParams(layoutParams);
@@ -240,7 +312,6 @@ public class AddProductActivity extends AppCompatActivity {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
-
     private void uploadProductInformation() {
         String productName = add_ET_ProductName.getText().toString().trim();
         String productBarcode = add_ET_ProductBarcode.getText().toString().trim();
@@ -275,11 +346,9 @@ public class AddProductActivity extends AppCompatActivity {
         uploadImagesAndProductInfo(product);
     }
 
-
     private void changeActivity() {
         Intent intent = new Intent(this, FragmentProductActivity.class);
         startActivity(intent);
         finish();
     }
-
 }
