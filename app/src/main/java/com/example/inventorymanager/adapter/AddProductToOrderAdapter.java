@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,41 +16,45 @@ import com.example.inventorymanager.Models.Product;
 import com.example.inventorymanager.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+public class AddProductToOrderAdapter extends RecyclerView.Adapter<AddProductToOrderAdapter.ProductViewHolder> {
     private List<Product> productList;
     private List<Product> filteredProductList;
     private Context context;
+    private HashMap<String, Integer> productQuantities;
 
-    public ProductAdapter(Context context, List<Product> productList) {
+    public AddProductToOrderAdapter(Context context, List<Product> productList) {
         this.context = context;
         this.productList = productList;
         this.filteredProductList = new ArrayList<>(productList);
+        this.productQuantities = new HashMap<>();
 
+        // Initialize all product quantities to 0
+        for (Product product : productList) {
+            productQuantities.put(product.getBarcode(), 0);
+        }
     }
 
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_product_order_item, parent, false);
         return new ProductViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ProductViewHolder holder, int position) {
         Product product = filteredProductList.get(position);
+
+        // Set product details
         holder.productName.setText(product.getName());
-        holder.productAmount.setText("Amount: " + product.getAmount());
         holder.productPrice.setText("Price: " + product.getPrice());
-
-        // Set the static text for barcode label
-        holder.productTXTBarcode.setText("Barcode:");
-
-        // Update the barcode with the actual product's barcode
         holder.productBarcode.setText(product.getBarcode());
+        holder.txtQuantity.setText(String.valueOf(0));
 
-        // Load the first image from Firebase Storage using Glide
+        // Load the product image using Glide
         if (product.getImages() != null && !product.getImages().isEmpty()) {
             String imageUrl = product.getImages().get(0);
             Glide.with(context)
@@ -60,12 +65,21 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.productImage.setImageResource(R.drawable.no_image_icon);
         }
 
-        // Remove or comment out the onClickListener
-        // holder.itemView.setOnClickListener(v -> {
-        //     Intent intent = new Intent(context, EditProductActivity.class);
-        //     intent.putExtra("Product", product);  // Passing the product object
-        //     context.startActivity(intent);
-        // });
+        // Set onClickListener for the plus button
+        holder.btnPlus.setOnClickListener(v -> {
+            int currentQuantity = productQuantities.get(product.getBarcode());
+            productQuantities.put(product.getBarcode(), currentQuantity + 1);
+            holder.txtQuantity.setText(String.valueOf(productQuantities.get(product.getBarcode())));
+        });
+
+        // Set onClickListener for the minus button
+        holder.btnMinus.setOnClickListener(v -> {
+            int currentQuantity = productQuantities.get(product.getBarcode());
+            if (currentQuantity > 0) {
+                productQuantities.put(product.getBarcode(), currentQuantity - 1);
+                holder.txtQuantity.setText(String.valueOf(productQuantities.get(product.getBarcode())));
+            }
+        });
     }
 
     @Override
@@ -87,18 +101,24 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         notifyDataSetChanged();
     }
 
+    public int getProductQuantity(String barcode) {
+        return productQuantities.getOrDefault(barcode, 0);
+    }
+
     static class ProductViewHolder extends RecyclerView.ViewHolder {
-        TextView productName, productAmount, productPrice, productBarcode, productTXTBarcode;
+        TextView productName, productPrice, productBarcode, txtQuantity;
         ImageView productImage;
+        Button btnMinus, btnPlus;
 
         ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             productName = itemView.findViewById(R.id.product_name);
-            productAmount = itemView.findViewById(R.id.product_amount);
             productPrice = itemView.findViewById(R.id.product_price);
             productBarcode = itemView.findViewById(R.id.product_barcode);
-            productTXTBarcode = itemView.findViewById(R.id.product_TXT_barcode);
+            txtQuantity = itemView.findViewById(R.id.txt_quantity);
             productImage = itemView.findViewById(R.id.product_IMG);
+            btnMinus = itemView.findViewById(R.id.btn_minus);
+            btnPlus = itemView.findViewById(R.id.btn_plus);
         }
     }
 }

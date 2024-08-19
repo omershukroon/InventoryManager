@@ -7,6 +7,13 @@
     <string name="horizontal_scrollview_content">Scrollable list of images</string>
     <string name="product_manager">Product Manager</string>
     <string name="order_manager">Order Manager</string>
+    <string name="add_order">Add Order</string>
+
+    <string-array name="spinner_array">
+        <item>All Orders</item>
+        <item>Fulfilled</item>
+        <item>Not Fulfilled</item>
+    </string-array>
 
 
 </resources>

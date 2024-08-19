@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -52,6 +53,7 @@ public class AddProductActivity extends AppCompatActivity {
     private List<String> imageUrls = new ArrayList<>();
     private Uri imageUri;
     private FirebaseStorage storage;
+    private ActivityResultLauncher<Intent> cameraLauncher;
 
 
     @Override
@@ -83,6 +85,8 @@ public class AddProductActivity extends AppCompatActivity {
 
         add_btn_AddProduct.setOnClickListener(v -> uploadProductInformation());
 
+        add_GoBack_floatingButton.setOnClickListener(v -> changeActivity());
+
     }
 
 
@@ -96,6 +100,7 @@ public class AddProductActivity extends AppCompatActivity {
                 // Camera selected
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    cameraLauncher.launch(takePictureIntent);
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 }
             } else if (which == 1) {
@@ -106,6 +111,7 @@ public class AddProductActivity extends AppCompatActivity {
         });
         builder.show();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

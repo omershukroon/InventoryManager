@@ -4,31 +4,28 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FragmentOrderActivity">
+    tools:context=".AddOrderActivity">
 
-    <!-- Top Bar Layout -->
     <LinearLayout
-        android:id="@+id/fragOrder_FRAME_bar"
+        android:id="@+id/addOrder_FRAME_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/up_bar"
         android:orientation="horizontal"
         android:padding="10dp">
 
-        <!-- Title -->
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/order_manager"
+            android:text="@string/add_order"
             android:textSize="25sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:layout_gravity="center" />
 
-        <!-- Back Button -->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/fragOrder_BTN_GoBack"
+            android:id="@+id/addOrder_BTN_GoBack"
             style="@style/Widget.Material3.Button.IconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,16 +34,14 @@
             app:iconTintMode="multiply" />
     </LinearLayout>
 
-    <!-- FrameLayout to Host Fragment -->
     <FrameLayout
-        android:id="@+id/fragOrder_FRAME_list"
-        android:layout_below="@+id/fragOrder_FRAME_bar"
+        android:id="@+id/addOrder_FRAME_list"
+        android:layout_below="@+id/addOrder_FRAME_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
         android:background="@color/white" />
 
-    <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"

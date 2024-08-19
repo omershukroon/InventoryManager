@@ -6,4 +6,6 @@
     <color name="main_BG">#D6E6F2</color>
     <color name="bar_BG1">#1A2130</color>
     <color name="bar_BG2">#5A72A0</color>
+    <color name="red_A400">#FF1744</color>
+    <color name="green_A400">#00E676</color>
 </resources>

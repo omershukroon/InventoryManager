@@ -13,7 +13,6 @@ public class Product implements Serializable {
     private String productID;
 
     public Product() {
-        // Default constructor required for calls to DataSnapshot.getValue(Product.class)
     }
 
     public Product(String name, String barcode, List<String> images, int amount, double price, String productID) {
