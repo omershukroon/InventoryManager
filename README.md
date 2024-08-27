@@ -7,7 +7,9 @@ In the application I used Authentication, Realtime Database and Storage.
 ### 1. Splash Animation 
 When you enter the application, an animation will appear, and after it ends, go to the login screen.
 
-![splash](https://github.com/user-attachments/assets/e5f49c0f-202b-43f1-85d4-236f9b1dee51)
+<div class="row">
+<img src="https://github.com/user-attachments/assets/e5f49c0f-202b-43f1-85d4-236f9b1dee51" alt="Splash Animation" style="height:700px;"/>
+</div>
 
 ### 2. Login Screen
 Login screen using Authentication from FireBase with login options with email, cell phone and Google account.
